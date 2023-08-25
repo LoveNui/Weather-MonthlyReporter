@@ -29,5 +29,5 @@ Please show here [https://www.geeksforgeeks.org/how-to-automate-google-sheets-wi
 ## Check out
 
 Check out on your google drive
-![enter image description here](https://github.com/montesound/WeatherMaster-MonthlyReporter/picture/Google_Driver.png?raw=true)
-![enter image description here](https://github.com/montesound/WeatherMaster-MonthlyReporter/picture/result.JPG?raw=true)
+![enter image description here](https://github.com/montesound/WeatherMaster-MonthlyReporter/blob/main/picture/Google_Driver.png)
+![enter image description here](https://github.com/montesound/WeatherMaster-MonthlyReporter/blob/main/picture/result.JPG)
