@@ -1,0 +1,3 @@
+firebirdsql
+pygsheets
+pandas
