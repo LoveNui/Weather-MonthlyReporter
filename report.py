@@ -82,9 +82,10 @@ def collecting_data(year, month):
 def save_google_sheet(args):
     year = args.year
     month = args.month
+    print(year, month)
     df_temp, df_rain = collecting_data(year=year, month=month)
     gc = pygsheets.authorize(service_file='cred.json')
-    sheet_name = f'Weather Report {year} {month}'
+    sheet_name = f'Weather Report {year}-{month}'
     sheet_id = ""
     try:
         res = gc.sheet.create(sheet_name)
@@ -112,9 +113,8 @@ def save_google_sheet(args):
 
 if __name__ == '__main__':
     parser = ArgumentParser()  
-    parser.add_argument("--year", tyep=int, help="Input the year you want")
+    parser.add_argument("--year", type=int, help="Input the year you want")
     parser.add_argument("--month", type =int, help="Input the month you want")
     args = parser.parse_args()
-
     save_google_sheet(args)
     conn.close()
