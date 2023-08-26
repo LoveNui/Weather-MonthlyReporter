@@ -1,6 +1,6 @@
 # Weather Report Generator
 
-This project is to extract data from firebird database. This project write results on google sheet. 
+This script is python script to extract data from Firebird Database for weather measurement. Firebird SQL Database contains my weather data. This scripti queries the database and creates a monthly report. The report's contents must be the daily maximum and minimum temperature for the prior 24 hours ending at 7AM. Also, rainfall for the past 24 hours ending at 7AM as well as the current temperature at 7AM. And this script ouput results of query on google sheets as report format.
 ## Step
 
 ### Step 1: Install Firebird database
@@ -29,5 +29,5 @@ Please show here [https://www.geeksforgeeks.org/how-to-automate-google-sheets-wi
 ## Check out
 
 Check out on your google drive
-![enter image description here](https://github.com/montesound/WeatherMaster-MonthlyReporter/blob/main/picture/Google_Driver.png)
-![enter image description here](https://github.com/montesound/WeatherMaster-MonthlyReporter/blob/main/picture/result.JPG)
+![enter image description here](https://github.com/LoveNui/Weather-MonthlyReporter/blob/main/picture/Google_Driver.png)
+![enter image description here](https://github.com/LoveNui/Weather-MonthlyReporter/blob/main/picture/result.JPG)
