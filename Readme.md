@@ -30,4 +30,4 @@ Please show here [https://www.geeksforgeeks.org/how-to-automate-google-sheets-wi
 
 Check out on your google drive
 ![enter image description here](https://github.com/LoveNui/Weather-MonthlyReporter/blob/main/picture/Google_Driver.png)
-![enter image description here](https://github.com/LoveNui/Weather-MonthlyReporter/blob/main/picture/result.JPG)
+![enter image description here](https://github.com/LoveNui/Weather-MonthlyReporter/blob/main/picture/Result.PNG)
