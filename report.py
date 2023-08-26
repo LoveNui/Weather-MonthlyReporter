@@ -111,7 +111,7 @@ def collecting_data(year, month):
         date.append(date_list[i+1])
         date_period.append(f'{date_list[i]}:7:00:00 to {date_list[i + 1]}:6:59:59')
         temp = get_maxmin_temp(date_list[i], date_list[i + 1])
-        dawn = get_temp_dawn(date_list[i])
+        dawn = get_temp_dawn(date_list[i+1])
         rain = get_sum_rain(date_list[i], date_list[i + 1])
         temp_max.append(temp[0])
         temp_min.append(temp[1])
