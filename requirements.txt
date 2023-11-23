@@ -1,3 +1,6 @@
 firebirdsql
 pygsheets
 pandas
+pystray
+PyQt6
+PIL
