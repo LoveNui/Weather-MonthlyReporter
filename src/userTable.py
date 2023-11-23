@@ -110,7 +110,9 @@ class managerSharingUsers(QDialog):
             pass
 
     def load_data(self):
-        users = os.getenv("SHARE_USER").split(",")
+        user =  os.getenv("SHARE_USER")
+        users = user if user else ""
+        users = users.split(",")
         if users == ['']:
             return [[]]
         else:

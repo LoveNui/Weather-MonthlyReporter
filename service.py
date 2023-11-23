@@ -62,7 +62,7 @@ class SMWinservice(win32serviceutil.ServiceFramework):
         load_dotenv(self.dotenv_file)
         if self.dotenv_file == "":
             with open(".env", "w") as f:
-                f.write(f'DB_PATH={os.getenv("DB_PATH")}\nDB_USER={os.getenv("DB_USER")}\nDB_PASSWORD={os.getenv("DB_PASSWORD")}\nUPDATE_FORMAT={os.getenv("UPDATE_FORMAT")}\nUPDATE_SCHEDULE={os.getenv("UPDATE_SCHEDULE")}\nSHARE_USER{os.getenv("SHARE_USER")}=\nCREDJSON={os.getenv("CREDJSON")}\n')
+                f.write("DB_PATH=\nDB_USER=\nDB_PASSWORD=\nUPDATE_FORMAT=\nUPDATE_SCHEDULE=\nSHARE_USER=\nCREDJSON=")
             f.close()
             self.dotenv_file = find_dotenv()
             load_dotenv(self.dotenv_file)
@@ -178,14 +178,16 @@ class SMWinservice(win32serviceutil.ServiceFramework):
                 user=os.getenv("DB_USER"),
                 password=os.getenv("DB_PASSWORD")
             )
-            users = os.getenv("SHARE_USER").split(",")
-            if users != ['']:
+            user =  os.getenv("SHARE_USER")
+            users = user if user else ""
+            users = users.split(",")
+            if users != [''] and users != []:
                 url = save_google_sheet(year=year, month=month, db=conn, users=users, cred=os.getenv("CREDJSON"))
                 try:
                     notification.notify(
                         title = f'Successfully!',
                         message = f'The {month} report was successfully updated.\n{url}',
-                        timeout = 10,
+                        timeout = 5,
                         app_icon = os.path.join(self.root_path,'src\\assets\success.ico')
                     )
                 except Exception as E:
@@ -197,7 +199,7 @@ class SMWinservice(win32serviceutil.ServiceFramework):
                 notification.notify(
                     title = f'Failed',
                     message = f'Failed to update the {month} weather report.\n {str(e)}',
-                    timeout = 10,
+                    timeout = 5,
                     app_icon = os.path.join(self.root_path,'src\\assets\warning.ico')
                 )
             except Exception as E:

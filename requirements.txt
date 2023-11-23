@@ -3,4 +3,6 @@ pygsheets
 pandas
 pystray
 PyQt6
-PIL
+pywin32
+python-dotenv
+plyer
