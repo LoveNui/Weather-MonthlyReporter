@@ -77,7 +77,7 @@ class SMWinservice(win32serviceutil.ServiceFramework):
 
         self.day_of_week = ["Mon", "Thu", "Wed", "Thur", "Fri", "Sat", "Sun"]
         self.root_path = os.path.dirname(__file__)
-        image_path = os.path.join(self.root_path,'src\\assets\icon.webp')  # change this path to the image file you have
+        image_path = os.path.join(self.root_path,'src\\assets\icon.ico')  # change this path to the image file you have
         img_direct = Image.open(image_path)
         
         self.icon = Icon('My System Tray Icon', img_direct, 'My System',  menu=(
@@ -98,7 +98,7 @@ class SMWinservice(win32serviceutil.ServiceFramework):
         Called when the service is asked to stop
         '''
         self.stop()
-        self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
+        self.ReportServiceStatus(win32service.SERVICE_STOPPED)
         win32event.SetEvent(self.hWaitStop)
 
     def SvcDoRun(self):
@@ -204,7 +204,7 @@ class SMWinservice(win32serviceutil.ServiceFramework):
                 )
             except Exception as E:
                 pass
-
+    
 # entry point of the module: copy and paste into the new module
 # ensuring you are calling the "parse_command_line" of the new created class
 if __name__ == '__main__':
