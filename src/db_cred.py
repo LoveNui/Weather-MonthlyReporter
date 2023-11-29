@@ -146,3 +146,9 @@ def save_google_sheet(year:int, month:int, db:Connection, users:list, cred:str):
     except Exception as e:
         print(e)
         return "Failed in writing on google sheet"
+
+
+def save_csv(year:int, month:int, db:Connection, f_path:str):
+    print(year, month)
+    df_data = collecting_data(year=year, month=month, db=db)
+    df_data.to_csv(f_path, sep=',', index=False, encoding='utf-8')

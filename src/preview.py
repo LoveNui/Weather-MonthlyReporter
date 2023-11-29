@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import *
-from .db_cred import collecting_data, save_google_sheet
+from .db_cred import collecting_data, save_google_sheet, save_csv
 from .preViewTable import TableModel
 from .userTable import managerSharingUsers
 from dotenv import load_dotenv, find_dotenv, set_key
@@ -85,8 +85,11 @@ class PreViewDatabase(QDialog):
         self.refresh_btn.setFixedSize(25, 25)
         self.refresh_btn.clicked.connect(self.refresh_data)
 
-        self.generate_gsheet = QPushButton("Generate", self)
+        self.generate_gsheet = QPushButton("G.Sheet", self)
         self.generate_gsheet.clicked.connect(self.generate_report)
+
+        self.generate_CSV_file = QPushButton("CSV", self)
+        self.generate_CSV_file.clicked.connect(self.open_save_file)
 
         layout1.addWidget(title_year)
         layout1.addWidget(self.year)
@@ -106,11 +109,15 @@ class PreViewDatabase(QDialog):
         layout2.addWidget(self.cred_json)
         layout2.addWidget(choose_btn)
 
+        layout3 = QHBoxLayout()
+        layout3.addWidget(self.generate_CSV_file)
+        layout3.addWidget(self.generate_gsheet)
+
         layout.addLayout(layout1)
         layout.addWidget(title)
         layout.addLayout(layout2)
         layout.addWidget(self.usersdashboard.manageUserDashboard)
-        layout.addWidget(self.generate_gsheet)
+        layout.addLayout(layout3)
 
         self.setDashboard.setLayout(layout)
         self.setDashboard.setFixedWidth(220)
@@ -148,7 +155,7 @@ class PreViewDatabase(QDialog):
             if users != ['']:
                 self.url = save_google_sheet(year=year, month=month, db=conn, users=users, cred=os.getenv("CREDJSON"))
                 dlg.setWindowTitle("Successfully!")
-                dlg.setText(f'Connection to database successfully!')
+                dlg.setText(f'Generated Google Sheet successfully!')
                 dlg.setIcon(QMessageBox.Icon.Information)
                 open_btn = dlg.addButton("Open", dlg.ButtonRole.ActionRole)
                 open_btn.clicked.connect(self.open_url)
@@ -161,11 +168,55 @@ class PreViewDatabase(QDialog):
             dlg.setIcon(QMessageBox.Icon.Critical)
             dlg.exec()
     
+    def generate_csv(self, file_path):
+        year = self.year.value()
+        month = self.month.value()
+        dlg = QMessageBox(self.parent)
+        try:
+            conn = firebirdsql.connect(
+                host='localhost',
+                database=os.environ["DB_PATH"],
+                user=os.environ["DB_USER"],
+                password=os.environ["DB_PASSWORD"]
+            )
+            if file_path != "":
+                self.url = save_csv(year=year, month=month, db=conn, f_path=file_path)
+                dlg.setWindowTitle("Successfully!")
+                dlg.setText(f'Generated CSV successfully!')
+                dlg.setIcon(QMessageBox.Icon.Information)
+                open_btn = dlg.addButton("Open", dlg.ButtonRole.ActionRole)
+                open_btn.clicked.connect(self.show_save_file)
+                dlg.exec()
+            else:
+                raise Exception("You don't input ueser of the weather report")
+        except Exception as e:
+            dlg.setWindowTitle("Failed!")
+            dlg.setText(str(e))
+            dlg.setIcon(QMessageBox.Icon.Critical)
+            dlg.exec()
+
+    
     def open_dialog(self):
         fname = QFileDialog.getOpenFileName(parent=self.parent)
         os.environ["CREDJSON"] = fname[0]
         set_key(self.env_path, "CREDJSON", os.environ["CREDJSON"])
         self.cred_json.setText(fname[0])
 
+    def open_save_file(self):
+        file_filter = 'Data File (*.xlsx *.csv);'
+        fname = QFileDialog.getSaveFileName(
+            parent=self.parent,
+            caption='Select a file',
+            directory=os.getcwd(),
+            filter=file_filter,
+            initialFilter='Excel File (*.xlsx *.xls *.csv)'
+        )
+        if fname[0]:
+            self.save_file = fname[0]
+            self.generate_csv(file_path=fname[0])
+    
     def open_url(self):
         webbrowser.open(self.url)
+    
+    def show_save_file(self):
+        os.startfile(self.save_file)

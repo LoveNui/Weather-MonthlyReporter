@@ -91,8 +91,8 @@ class WidgetGallery(QDialog):
         self.setLayout(mainLayout)
 
         this_path = os.path.dirname(__file__)
-        self.setWindowTitle("Weather Reporter v1.0")
-        self.setWindowIcon(QIcon(os.path.join(this_path,'src/assets/icon.webp')))
+        self.setWindowTitle("Weather Reporter v1.1")
+        self.setWindowIcon(QIcon(os.path.join(this_path,'src/assets/icon.ico')))
         self.changeStyle('Windows')
 
     def changeStyle(self, styleName):
