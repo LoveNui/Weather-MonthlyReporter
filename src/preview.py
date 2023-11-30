@@ -153,15 +153,18 @@ class PreViewDatabase(QDialog):
             )
             users = os.getenv("SHARE_USER").split(",")
             if users != ['']:
-                self.url = save_google_sheet(year=year, month=month, db=conn, users=users, cred=os.getenv("CREDJSON"))
-                dlg.setWindowTitle("Successfully!")
-                dlg.setText(f'Generated Google Sheet successfully!')
-                dlg.setIcon(QMessageBox.Icon.Information)
-                open_btn = dlg.addButton("Open", dlg.ButtonRole.ActionRole)
-                open_btn.clicked.connect(self.open_url)
-                dlg.exec()
+                if os.getenv("CREDJSON") != "":
+                    self.url = save_google_sheet(year=year, month=month, db=conn, users=users, cred=os.getenv("CREDJSON"))
+                    dlg.setWindowTitle("Successfully!")
+                    dlg.setText(f'Generated Google Sheet successfully!')
+                    dlg.setIcon(QMessageBox.Icon.Information)
+                    open_btn = dlg.addButton("Open", dlg.ButtonRole.ActionRole)
+                    open_btn.clicked.connect(self.open_url)
+                    dlg.exec()
+                else:
+                    raise Exception("You don't set Google Credential Key.")
             else:
-                raise Exception("You don't input ueser of the weather report")
+                raise Exception("You don't input ueser of the weather report.")
         except Exception as e:
             dlg.setWindowTitle("Failed!")
             dlg.setText(str(e))

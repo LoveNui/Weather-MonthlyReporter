@@ -14,10 +14,9 @@ import threading
 
 from PIL import Image
 
-class Weather(QDialog):
+class Weather():
 
-    def __init__(self, parent=None, env_path=str):
-        super(Weather, self).__init__(parent)
+    def __init__(self):
 
         self.dotenv_file = find_dotenv()
         load_dotenv(self.dotenv_file)
@@ -27,8 +26,8 @@ class Weather(QDialog):
             f.close()
             self.dotenv_file = find_dotenv()
             load_dotenv(self.dotenv_file)
-        
-        self.gallery = WidgetGallery(parent=self, env_path=self.dotenv_file)
+        self.app = QApplication(sys.argv)
+        self.gallery = WidgetGallery(parent=None, env_path=self.dotenv_file)
         
         this_path = os.path.dirname(__file__)
         icon_image = QIcon(os.path.join(this_path,'src/assets/icon.ico'))
@@ -56,14 +55,15 @@ class Weather(QDialog):
 
     def show_from_taskbar(self):
         self.gallery.show()
+        
 
     def quit_action(self):
         self.flag = False
         self.gallery.close()
-        self.close()
+        # self.close()
         time.sleep(5)
         self.thread1.join()
-        QApplication.exit()
+        self.app.exit()
 
     def main(self):
         while self.flag:
@@ -146,10 +146,7 @@ class Weather(QDialog):
 # ensuring you are calling the "parse_command_line" of the new created class
 if __name__ == '__main__':
 
-    import sys
-
-    app = QApplication(sys.argv)
     weather = Weather()
     weather.icon.show()
-    sys.exit(app.exec())
+    sys.exit(weather.app.exec())
     

@@ -41,13 +41,22 @@
 ##
 #############################################################################
 
+import typing
+from PyQt6 import QtGui
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
 from PyQt6.QtCore import *
 from src.dbset import DatabaseSet
 from src.updateset import UpdateScheduleSet
 from src.preview import PreViewDatabase
-import os, sys
+import os, datetime, time, sys
+
+from dotenv import load_dotenv, find_dotenv
+from plyer import notification
+import firebirdsql
+from src.db_cred import save_google_sheet
+
+import threading
 
 class WidgetGallery(QDialog):
     
@@ -91,9 +100,126 @@ class WidgetGallery(QDialog):
         self.setLayout(mainLayout)
 
         this_path = os.path.dirname(__file__)
+        icon_image = QIcon(os.path.join(this_path,'src/assets/icon.ico'))
+
+        self.day_of_week = ["Mon", "Thu", "Wed", "Thur", "Fri", "Sat", "Sun"]
+        self.root_path = os.path.dirname(__file__)
+        self.main_flag = True
+
+        self.icon = QSystemTrayIcon()
+        self.icon.setIcon(icon_image)
+        self.icon.setVisible(True)
+
+        ctmenu = QMenu()
+        actionshow = ctmenu.addAction("Settings")
+        actionshow.triggered.connect(self.show_from_taskbar)
+        actionquit = ctmenu.addAction("Quit")
+        actionquit.triggered.connect(self.quit_action)
+
+        self.icon.setContextMenu(ctmenu)
+
         self.setWindowTitle("Weather Reporter v1.1")
-        self.setWindowIcon(QIcon(os.path.join(this_path,'src/assets/icon.ico')))
+        self.setWindowIcon(icon_image)
         self.changeStyle('Windows')
+        self.setWindowFlags(self.windowFlags() & ~Qt.WindowType.Tool)
+        self.windowIcon=os.path.join(this_path,'src/assets/icon.ico')
+        
+        self.icon.show()
+        self.flag = True
+        self.thread1 = threading.Thread(target=self.main)
+        self.thread1.start()
+
+    def show_from_taskbar(self):
+        self.show()
+
+    def quit_action(self):
+        self.icon.hide()
+        self.flag = False
+        time.sleep(5)
+        self.thread1.join()
+        QApplication.exit()
+
+    def closeEvent(self, a0:typing.Optional[QCloseEvent]=None) -> None:
+        a0.ignore()
+        self.hide()
+
+    def main(self):
+        while self.flag:
+            current_time = datetime.datetime.now()
+            update_method = os.getenv("UPDATE_FORMAT")
+            update_schedule = os.getenv("UPDATE_SCHEDULE")
+            print(update_method)
+            print(update_schedule)
+            if update_method == 'None':
+                pass
+            elif update_method == 'Hourly':
+                schedule = update_schedule.split("#")
+                time_obj = datetime.datetime.strptime(schedule[-1], '%Y-%m-%d %H:%M:%S.%f')
+                second = (current_time - time_obj).total_seconds()
+                unit = int(schedule[1])*60*(1 if schedule[0]=="minutes" else 60)
+                print(second)
+                if second%unit < 5:
+                    self.generate_sheet()
+            elif update_method == 'Monthly':
+                schedule = update_schedule.split("#")
+                date = f'{current_time.year}-{current_time.month}-{schedule[0]} {schedule[1]}'
+                time_obj = datetime.datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
+                if abs((current_time - time_obj).total_seconds()) < 5:
+                    self.generate_sheet()
+            elif update_method == 'Weekly':
+                schedule = update_schedule.split("#")
+                delta = self.day_of_week.index(schedule[0]) - current_time.weekday()
+                delta = delta + 7 if delta < 0 else 0
+                day = current_time.date() + datetime.timedelta(days=delta)
+                date = f'{day.strftime("%Y-%m-%d")} {schedule[1]}'
+                time_obj = datetime.datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
+                if abs((current_time - time_obj).total_seconds()) < 5:
+                    self.generate_sheet()
+            elif update_method == 'Daily':
+                date = f'{current_time.year}-{current_time.month}-{current_time.day} {update_schedule}'
+                time_obj = datetime.datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
+                if abs((current_time - time_obj).total_seconds()) < 5:
+                    self.generate_sheet()
+
+            time.sleep(5)
+
+    def generate_sheet(self):
+        year = datetime.datetime.now().year
+        month = datetime.datetime.now().month
+        try:
+            conn = firebirdsql.connect(
+                host='localhost',
+                database=os.getenv("DB_PATH"),
+                user=os.getenv("DB_USER"),
+                password=os.getenv("DB_PASSWORD")
+            )
+            user =  os.getenv("SHARE_USER")
+            users = user if user else ""
+            users = users.split(",")
+            if users != [''] and users != []:
+                url = save_google_sheet(year=year, month=month, db=conn, users=users, cred=os.getenv("CREDJSON"))
+                try:
+                    notification.notify(
+                        title = f'Successfully!',
+                        message = f'The {month} report was successfully updated.\n{url}',
+                        timeout = 5,
+                        app_icon = os.path.join(self.root_path,'src\\assets\success.ico')
+                    )
+                except Exception as E:
+                    pass
+            else:
+                raise Exception("You don't input ueser of the weather report")
+        except Exception as e:
+            try:
+                notification.notify(
+                    title = f'Failed',
+                    message = f'Failed to update the {month} weather report.\n {str(e)}',
+                    timeout = 5,
+                    app_icon = os.path.join(self.root_path,'src\\assets\warning.ico')
+                )
+            except Exception as E:
+                pass
+    
 
     def changeStyle(self, styleName):
         QApplication.setStyle(QStyleFactory.create(styleName))
@@ -104,3 +230,14 @@ class WidgetGallery(QDialog):
             QApplication.setPalette(QApplication.style().standardPalette())
         else:
             QApplication.setPalette(self.originalPalette)
+
+if __name__ == "__main__":
+    from dotenv import find_dotenv, load_dotenv
+    dotenv_file = find_dotenv()
+    load_dotenv(dotenv_file)
+    app = QApplication(sys.argv)
+    app.setWindowIcon(QIcon('C:/Users/Administrator/Documents/Weather-MonthlyReporter/icon.ico'))
+    gallery = WidgetGallery(env_path=dotenv_file)
+    gallery.show()
+    gallery.hide()
+    sys.exit(app.exec())
