@@ -23,11 +23,22 @@ Please show here [https://www.geeksforgeeks.org/how-to-automate-google-sheets-wi
 
 `pip install -r requirements.txt`
 
-## Run report.py
-`python report.py --year 2023 --month 8`
+## Make .exe file
+`pyinstaller.exe --onefile --hidden-import plyer.platforms.win.notification --add-data "src/assets/*;src/assets/" --add-data "src/*;src/" --icon icon.ico --noconsole Settings.py`
+
+## Deploy this project
+After making the exe file, copy the <b>./dist/Settings.exe</b> file to <b>C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup</b>
 
 ## Check out
 
-Check out on your google drive
+#### Check out on your google drive
 ![enter image description here](https://github.com/LoveNui/Weather-MonthlyReporter/blob/main/picture/Google_Driver.png)
+#### Seeting Dashboard
+![enter image description here](https://github.com/LoveNui/Weather-MonthlyReporter/blob/main/picture/Settings_Dashbaord.png)
+#### Output CSV format
+![enter image description here](https://github.com/LoveNui/Weather-MonthlyReporter/blob/main/picture/Output_CSV.png)
+#### Output Google Sheet
+![enter image description here](https://github.com/LoveNui/Weather-MonthlyReporter/blob/main/picture/Output_GSheet.png)
+#### Set auto update schedule
+![enter image description here](https://github.com/LoveNui/Weather-MonthlyReporter/blob/main/picture/Auto_update.png)
 ![enter image description here](https://github.com/LoveNui/Weather-MonthlyReporter/blob/main/picture/Result.PNG)
