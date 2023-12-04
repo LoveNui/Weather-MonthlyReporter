@@ -32,13 +32,13 @@ After making the exe file, copy the <b>./dist/Settings.exe</b> file to <b>C:\Pro
 ## Check out
 
 #### Check out on your google drive
-![enter image description here](https://github.com/LoveNui/Weather-MonthlyReporter/blob/main/picture/Google_Driver.png)
+![enter image description here](https://github.com/LoveNui/Weather-MonthlyReporter/blob/main/picture/Google_Driver.PNG)
 #### Seeting Dashboard
-![enter image description here](https://github.com/LoveNui/Weather-MonthlyReporter/blob/main/picture/Settings_Dashbaord.png)
+![enter image description here](https://github.com/LoveNui/Weather-MonthlyReporter/blob/main/picture/Settings_Dashbaord.PNG)
 #### Output CSV format
-![enter image description here](https://github.com/LoveNui/Weather-MonthlyReporter/blob/main/picture/Output_CSV.png)
+![enter image description here](https://github.com/LoveNui/Weather-MonthlyReporter/blob/main/picture/Output_CSV.PNG)
 #### Output Google Sheet
-![enter image description here](https://github.com/LoveNui/Weather-MonthlyReporter/blob/main/picture/Output_GSheet.png)
+![enter image description here](https://github.com/LoveNui/Weather-MonthlyReporter/blob/main/picture/Output_GSheet.PNG)
 #### Set auto update schedule
-![enter image description here](https://github.com/LoveNui/Weather-MonthlyReporter/blob/main/picture/Auto_update.png)
+![enter image description here](https://github.com/LoveNui/Weather-MonthlyReporter/blob/main/picture/Auto_update.PNG)
 ![enter image description here](https://github.com/LoveNui/Weather-MonthlyReporter/blob/main/picture/Result.PNG)
