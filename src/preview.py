@@ -206,13 +206,13 @@ class PreViewDatabase(QDialog):
         self.cred_json.setText(fname[0])
 
     def open_save_file(self):
-        file_filter = 'Data File (*.xlsx *.csv);'
+        file_filter = 'Data File (*.csv *.xlsx);'
         fname = QFileDialog.getSaveFileName(
             parent=self.parent,
             caption='Select a file',
             directory=os.getcwd(),
             filter=file_filter,
-            initialFilter='Excel File (*.xlsx *.xls *.csv)'
+            initialFilter='Excel File (*.csv *.xlsx *.xls)'
         )
         if fname[0]:
             self.save_file = fname[0]
